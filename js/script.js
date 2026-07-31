@@ -165,20 +165,80 @@ const templateSwiper = new Swiper(".templateSwiper", {
 ===================================== */
 
 const contactForm = document.getElementById("contact-form");
-const contactFormStatus = document.getElementById(
-  "contact-form-status"
-);
+const formStatus = document.getElementById("contact-form-status");
 
-if (contactForm && contactFormStatus) {
-  contactForm.addEventListener("submit", (event) => {
-    event.preventDefault();
+if (contactForm && formStatus) {
 
-    contactFormStatus.className =
-      "contact-form-status success";
+  const submitButton = contactForm.querySelector(".contact-submit");
+  const submitText = contactForm.querySelector(".submit-text");
+  const submitIcon = contactForm.querySelector(".contact-submit i");
 
-    contactFormStatus.textContent =
-      "Thank you! Your form is ready to be connected to an email service.";
+  contactForm.addEventListener("submit", async function (e) {
+
+    e.preventDefault();
+
+    submitButton.disabled = true;
+    submitButton.classList.add("is-loading");
+
+    submitText.textContent = "Sending...";
+    submitIcon.className = "fa-solid fa-spinner";
+
+    formStatus.className = "contact-form-status sending";
+    formStatus.textContent = "Sending your message...";
+
+    const formData = new FormData(contactForm);
+
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
+    try {
+
+      const response = await fetch(
+        "https://api.web3forms.com/submit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: json
+        }
+      );
+
+      const result = await response.json();
+
+      if (result.success) {
+
+        formStatus.className = "contact-form-status success";
+        formStatus.textContent =
+          "✅ Thank you! Your enquiry has been sent successfully.";
+
+        contactForm.reset();
+
+      } else {
+
+        formStatus.className = "contact-form-status error";
+        formStatus.textContent =
+          result.message || "Something went wrong.";
+
+      }
+
+    } catch (error) {
+
+      formStatus.className = "contact-form-status error";
+      formStatus.textContent =
+        "Unable to send message. Please try again.";
+
+    }
+
+    submitButton.disabled = false;
+    submitButton.classList.remove("is-loading");
+
+    submitText.textContent = "Send Message";
+    submitIcon.className = "fa-regular fa-paper-plane";
+
   });
+
 }
 
 
