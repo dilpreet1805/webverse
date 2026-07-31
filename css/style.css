@@ -2081,8 +2081,9 @@ a.contact-item:focus-visible {
 
 .faq-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px 28px;
+  align-items: start;
 }
 
 /* =====================================
@@ -2090,6 +2091,8 @@ a.contact-item:focus-visible {
 ===================================== */
 
 .faq-item {
+  align-self: start;
+  height: fit-content;
   overflow: hidden;
   background-color: #ffffff;
   border: 1px solid #e1e4ed;
