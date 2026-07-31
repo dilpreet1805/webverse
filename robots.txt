@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dilpreet1805.github.io/webverse/sitemap.xml
